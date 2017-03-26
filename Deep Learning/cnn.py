@@ -20,6 +20,8 @@ from keras.layers import MaxPooling2D
 from keras.layers import Flatten
 from keras.layers import Dense
 
+import os, sys
+
 # initialize CNN
 classifier = Sequential()
 
@@ -74,3 +76,41 @@ classifier.fit_generator(
         nb_epoch=25,
         validation_data=test_set,
         nb_val_samples=2000)
+
+
+# Making the prediction
+new_datagen = ImageDataGenerator(rescale=1./255)
+new_set = new_datagen.flow_from_directory(
+        'image_dataset/new_set',
+        target_size=(64, 64),
+        batch_size=6,
+        class_mode=None,
+        shuffle = False)
+
+predictions = classifier.predict_generator(new_set, 6)
+
+# Read filenames in the folder
+path = "image_dataset/new_set/test"
+filenames = os.listdir( path )
+
+# Read classnames
+path = "image_dataset/training_set"
+classnames = os.listdir( path )
+classnames = [i for i in classnames if i != '.DS_Store']
+
+# Create the dataframe
+import pandas as pd
+import numpy as np
+df = pd.DataFrame(filenames)
+df.columns = ['Filename']
+df['Prediction'] = np.round(predictions)
+df['Predicted Class'] = [classnames[int(i)] for i in np.round(predictions)]
+df['Confidence'] = predictions
+  
+temp = (df[['Prediction','Confidence']].sum(axis=1) - 1).abs()
+df['Confidence'] = temp 
+df.drop('Prediction', axis=1, inplace=True)
+  
+# Export to Excel
+df.to_excel('Prediction_output.xls', index=True)
+print('Done')

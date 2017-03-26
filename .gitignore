@@ -90,3 +90,7 @@ ENV/
 
 #MacOS
 .DS_Store
+
+# new observations in dataset
+Datasets and Libraries/image_dataset/new_set
+Datasets and Libraries/Prediction_output.xls
