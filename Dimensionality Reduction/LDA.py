@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sat Mar 25 20:05:45 2017
+Created on Sun Mar 26 18:09:25 2017
 
 @author: imcbv
 """
 
-# PCA
+# LDA
 
 # Reset variables
 %reset -f
@@ -31,11 +31,11 @@ sc_X = StandardScaler()
 X_train = sc_X.fit_transform(X_train) 
 X_test = sc_X.transform(X_test)
 
-# Applying PCA
-from sklearn.decomposition import PCA
-pca = PCA(n_components = 2)
-X_train = pca.fit_transform(X_train)
-X_test = pca.transform(X_test)
+# Applying LDA
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
+lda = LDA(n_components = 2)
+X_train = lda.fit_transform(X_train, y_train)
+X_test = lda.transform(X_test)
 
 # Fitting the Model to the dataset
 from sklearn.linear_model import LogisticRegression
